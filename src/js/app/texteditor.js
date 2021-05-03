@@ -111,7 +111,7 @@ function updateIndices() {
 
 function rerenderWord(word) {
 	word.elem.innerText = word.word;
-	word.wsElem.innerText = word.space;
+	word.wsElem.textContent = word.space;
 }
 
 function editWordImmediately(fn, spaceFn) {
@@ -124,10 +124,16 @@ function editWordImmediately(fn, spaceFn) {
 	}
 }
 
+function previousWord() {
+	if(activeWord && activeWord.index > 0) {
+		setActiveWord(activeWord.index - 1);
+	}
+}
+
 function nextWord() {
-			if(activeWord && activeWord.index < words.length - 1) {
-				setActiveWord(activeWord.index + 1);
-			}
+	if(activeWord && activeWord.index < words.length - 1) {
+		setActiveWord(activeWord.index + 1);
+	}
 }
 
 function editWord() {
@@ -198,9 +204,7 @@ document.addEventListener('keydown', event => {
 	}
 	switch(event.key) {
 		case 'ArrowLeft':
-			if(activeWord && activeWord.index > 0) {
-				setActiveWord(activeWord.index - 1);
-			}
+			previousWord();
 			break;
 		case 'ArrowRight':
 			nextWord();
@@ -229,8 +233,31 @@ document.addEventListener('keydown', event => {
 		case 'd':
 			deleteWord();
 			break;
+		case 'Enter':
+			previousWord();
+			editWordImmediately(w => w, addEnter);
+			nextWord();
+			break;
+		case 'B':
+			previousWord();
+			editWordImmediately(w => w, addEnter);
+			nextWord();
+			finishEditing('[B] ' + activeWord.word);
+			previousWord();
+			break;
+		case 'W':
+			previousWord();
+			editWordImmediately(w => w, addEnter);
+			nextWord();
+			finishEditing('[W] ' + activeWord.word);
+			previousWord();
+			break;
 	}
 });
+
+function addEnter(s) {
+	return s.replaceAll(/[^\n]/g, '') + '\n';
+}
 
 /*
 document.addEventListener('load', () => {

@@ -216,6 +216,10 @@ document.addEventListener('keydown', event => {
 			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + event.key);
 			nextWord();
 			break;
+		case '>':
+			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + '...');
+			nextWord();
+			break;
 		case 'A':
 			editWordImmediately(w => w.substring(0,1).toUpperCase() + w.substring(1));
 			break;

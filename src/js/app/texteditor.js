@@ -43,11 +43,12 @@ window.loadTextFinish = () => {
 };
 function loadText1(text) {
 	words = tokenize(text);
+	console.log(words);
 	renderWords();
 }
 function tokenize(str) {
 	const words = [];
-	const re = /^([^ \t\n]+)(\s*)/;
+	const re = /^([^ \t\n]+)([ \t\n]*)/;
 	for(let i = 0; i < str.length;) {
 		const matches = re.exec(str.substring(i));
 		if(!matches) {
@@ -84,6 +85,8 @@ let activeWord = null;
 function setActiveWord(index) {
 	if(activeWord) {
 		activeWord.elem.classList.remove('active');
+		activeWord.elem.contentEditable = false;
+		activeWord.editing = false;
 		activeWord = null;
 	}
 	const word = words[index];
@@ -91,9 +94,89 @@ function setActiveWord(index) {
 	activeWord = word;
 }
 
+function renderWord(word) {
+	word.elem.innerText = word.word;
+	word.wsElem.innerText = word.space;
+}
+
+function editWordImmediately(fn, spaceFn) {
+	if(activeWord) {
+		activeWord.word = fn(activeWord.word);
+		if(spaceFn) {
+			activeWord.space = spaceFn(activeWord.space);
+		}
+		renderWord(activeWord);
+	}
+}
+
+function nextWord() {
+			if(activeWord && activeWord.index < words.length - 1) {
+				setActiveWord(activeWord.index + 1);
+			}
+}
+
+function editWord() {
+	if(!activeWord) {
+		return;
+	}
+	activeWord.editing = true;
+	activeWord.elem.contentEditable = true;
+
+	// https://stackoverflow.com/questions/6139107/programmatically-select-text-in-a-contenteditable-html-element#6150060
+	    const range = document.createRange();
+	    range.selectNodeContents(activeWord.elem);
+	    const sel = window.getSelection();
+	    sel.removeAllRanges();
+	    sel.addRange(range);
+}
+
+function finishEditing() {
+	activeWord.word = activeWord.elem.innerText;
+		activeWord.elem.contentEditable = false;
+		activeWord.editing = false;
+}
+
+document.addEventListener('keydown', event => {
+	console.log('key event', event);
+	if(activeWord && activeWord.editing) {
+		switch(event.key) {
+			case 'Enter':
+				event.preventDefault();
+				finishEditing();
+				nextWord();
+				break;
+		}
+		return;
+	}
+	switch(event.key) {
+		case 'ArrowLeft':
+			if(activeWord && activeWord.index > 0) {
+				setActiveWord(activeWord.index - 1);
+			}
+			break;
+		case 'ArrowRight':
+			nextWord();
+			break;
+		case ',':
+			editWordImmediately(w => w.replaceAll(/[-,:.[\]]/g, '') + ',');
+			nextWord();
+			break;
+		case '.':
+			editWordImmediately(w => w.replaceAll(/[-,:.[\]]/g, '') + '.');
+			nextWord();
+			break;
+		case 'c':
+			event.preventDefault();
+			editWord();
+			break;
+	}
+});
+
+/*
 document.addEventListener('load', () => {
 	loadText1("Ala ma kota, a kot\nma jakieś ale");
 });
+*/
 
 export {
     initWatchFormatting as watchFormatting,

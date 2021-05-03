@@ -61,14 +61,34 @@ function tokenize(str) {
 function renderWords() {
   var textbox = document.querySelector('#textbox');
 	textbox.innerText = '';
-	for(const word of words) {
+	for(let index = 0; index < words.length; index++) {
+		const word = words[index];
 		const elem = document.createElement('span');
+		word.elem = elem;
+		word.index = index;
 		elem.className = 'word';
 		elem.innerText = word.word;
+		elem.onclick = () => {
+			setActiveWord(index);
+		};
 		textbox.appendChild(elem);
 		const ws = document.createTextNode(word.space);
+		word.wsElem = ws;
 		textbox.appendChild(ws);
 	}
+	if(words.length > 0) {
+		setActiveWord(0);
+	}
+}
+let activeWord = null;
+function setActiveWord(index) {
+	if(activeWord) {
+		activeWord.elem.classList.remove('active');
+		activeWord = null;
+	}
+	const word = words[index];
+	word.elem.classList.add('active');
+	activeWord = word;
 }
 
 document.addEventListener('load', () => {

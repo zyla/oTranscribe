@@ -57,4 +57,10 @@
 }
 
 .word {
+	display: inline-block;
+	background: transparent;
+	padding: 2px;
+	&.active {
+		background: lightgray;
+	}
 }

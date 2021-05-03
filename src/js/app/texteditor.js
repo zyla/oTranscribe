@@ -192,7 +192,7 @@ function renderWord(word) {
 }
 
 document.addEventListener('keydown', event => {
-	console.log('key event', event);
+	console.log('key pressed: ' + event.key);
 	if(activeWord && activeWord.editing) {
 		switch(event.key) {
 			case 'Enter':
@@ -204,9 +204,11 @@ document.addEventListener('keydown', event => {
 	}
 	switch(event.key) {
 		case 'ArrowLeft':
+		case 'h':
 			previousWord();
 			break;
 		case 'ArrowRight':
+		case 'l':
 			nextWord();
 			break;
 		case ',':

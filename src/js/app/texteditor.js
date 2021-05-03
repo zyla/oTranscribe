@@ -210,11 +210,15 @@ document.addEventListener('keydown', event => {
 			nextWord();
 			break;
 		case ',':
+			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + event.key);
+			nextWord();
+			break;
 		case '.':
 		case '?':
 		case '!':
 			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + event.key);
 			nextWord();
+			editWordImmediately(w => w.substring(0,1).toUpperCase() + w.substring(1));
 			break;
 		case '>':
 			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + '...');
@@ -230,6 +234,13 @@ document.addEventListener('keydown', event => {
 			event.preventDefault();
 			editWord();
 			break;
+		case 'i':
+			event.preventDefault();
+			nextWord();
+			insertWords([ { word: '', space: ' ' } ]);
+			previousWord();
+			editWord();
+			break;
 		case ' ':
 			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, ''));
 			nextWord();
@@ -240,6 +251,11 @@ document.addEventListener('keydown', event => {
 		case 'Enter':
 			previousWord();
 			editWordImmediately(w => w, addEnter);
+			nextWord();
+			break;
+		case 'Backspace':
+			previousWord();
+			editWordImmediately(w => w, space => ' ');
 			nextWord();
 			break;
 		case 'B':

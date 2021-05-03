@@ -210,18 +210,18 @@ document.addEventListener('keydown', event => {
 			nextWord();
 			break;
 		case ',':
-			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + event.key);
+			editWordImmediately(w => w.replace(/[-,:.!?[\]]/g, '') + event.key);
 			nextWord();
 			break;
 		case '.':
 		case '?':
 		case '!':
-			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + event.key);
+			editWordImmediately(w => w.replace(/[-,:.!?[\]]/g, '') + event.key);
 			nextWord();
 			editWordImmediately(w => w.substring(0,1).toUpperCase() + w.substring(1));
 			break;
 		case '>':
-			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + '...');
+			editWordImmediately(w => w.replace(/[-,:.!?[\]]/g, '') + '...');
 			nextWord();
 			break;
 		case 'A':
@@ -242,7 +242,7 @@ document.addEventListener('keydown', event => {
 			editWord();
 			break;
 		case ' ':
-			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, ''));
+			editWordImmediately(w => w.replace(/[-,:.!?[\]]/g, ''));
 			nextWord();
 			break;
 		case 'd':
@@ -276,7 +276,7 @@ document.addEventListener('keydown', event => {
 });
 
 function addEnter(s) {
-	return s.replaceAll(/[^\n]/g, '') + '\n';
+	return s.replace(/[^\n]/g, '') + '\n';
 }
 
 /*

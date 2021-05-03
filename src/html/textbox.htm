@@ -10,19 +10,17 @@
             <div class="message-content"></div>
     </div>
     
-    <div id="textbox"  class="mousetrap" contenteditable="true">
-        <p data-l10n-id="d-txt1">Enter your transcript here...</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p data-l10n-id="d-txt2">Protips:</p>
-        <p>&nbsp;</p>
-        <p data-l10n-id="d-txt3">- <em>Ctrl+I</em> adds <em>italic</em> formatting and <b>Ctrl+B</b> adds <b>bold</b> formatting.</p>
-        <p data-l10n-id="d-txt4">- Press ESC to play/pause, and Ctrl+J to insert the current timestamp.<p>
+    <div id="textbox" class="mousetrap">
+    </div>
+
+    <div id="load-text" style="display: none; position: absolute; left: 20%; top: 20%; right: 20%; bottom: 20%;"
+><button onclick="window.loadTextFinish()">Load</button><br>
+      <textarea style="width: 100%; height: 90%;"></textarea>
     </div>
     
     <div class="text-panel">
-        <button class="sbutton bold" onclick="document.execCommand('bold',false,null);">
-            <i class="fa fa-bold" id="icon-b"></i><span class="label" data-shortcut="bold">ctrl+b</span>
+        <button class="sbutton" onclick="window.loadText()">
+            <i class="fa fa-download"></i><span class="label">Load text</span>
         </button>
         <button class="sbutton italic" onclick="document.execCommand('italic',false,null);">
             <i class="fa fa-italic" id="icon-i"></i><span class="label" data-shortcut="italic">ctrl+i</span>

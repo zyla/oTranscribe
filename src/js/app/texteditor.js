@@ -11,48 +11,16 @@ function countWords(str){
 }
 
 function countTextbox(){
-    var textboxElement = document.getElementById('textbox');
-    var textboxText = textboxElement.innerText || textboxElement.textContent;
-    var count = countWords(textboxText);
-      
-    var wordcountText = document.webL10n.get('wordcount', {n: count});
-    wordcountText = wordcountText.replace(/(\d+)/, (n) => {
-        return `<span class="word-count-number">${n}</span>`;
-    });
-    document.querySelector('.wc-text').innerHTML = wordcountText;
 }
 
 function initWordCount(){
-    countTextbox();
-    setInterval(function(){
-        countTextbox();
-    }, 1000);
-    
 }
 
 
 function watchFormatting(){
-    var b = document.queryCommandState("Bold");
-    var bi = document.getElementById("icon-b");
-    var i = document.queryCommandState("italic");
-    var ii = document.getElementById("icon-i");
-    
-    if (b === true){
-        bi.className = "fa fa-bold active"
-    } else {
-        bi.className = "fa fa-bold"
-    }
-    if (i === true){
-        ii.className = "fa fa-italic active"
-    } else {
-        ii.className = "fa fa-italic"
-    }
 }
 
 function initWatchFormatting(){
-    setInterval(function(){
-        watchFormatting();
-    }, 100);
 }
 
 function setEditorContents( dirtyText, opts = {} ) {
@@ -101,6 +69,16 @@ function initAutoscroll() {
     }
   });
 }
+
+window.loadText = () => {
+	$('#load-text').show();
+};
+window.loadTextFinish = () => {
+	$('#load-text').hide();
+	const text = $('#load-text textarea').val();
+  var textbox = document.querySelector('#textbox');
+	textbox.innerText = text;
+};
 
 export {
     initWatchFormatting as watchFormatting,

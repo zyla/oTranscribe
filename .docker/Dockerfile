@@ -31,11 +31,16 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 ENV LC_ALL en_US.UTF-8
 
 RUN apt-get update \
-  && apt-get -y install dumb-init git \
+  && apt-get -y install dumb-init git make \
   && rm -rf /var/cache/apt/*
 
-USER user
+RUN apt-get update \
+  && apt-get -y install python build-essential \
+  && rm -rf /var/cache/apt/*
+
+RUN useradd -m -u 1001 -G sudo user2
+USER user2
 
 RUN echo 'set -o vi' >> ~/.bashrc
-
-
+RUN mkdir ~/.cache
+RUN mkdir ~/.npm

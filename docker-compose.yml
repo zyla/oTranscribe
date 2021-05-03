@@ -6,4 +6,10 @@ services:
     command: dumb-init sh -c 'while sleep 1000; do true; done'
     volumes:
       - .:/app
+      - cache:/home/user2/.cache
+      - npm:/home/user2/.npm
     working_dir: /app
+
+volumes:
+  cache:
+  npm:

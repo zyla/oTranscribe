@@ -70,7 +70,7 @@ function renderWords() {
 		elem.className = 'word';
 		elem.innerText = word.word;
 		elem.onclick = () => {
-			setActiveWord(index);
+			setActiveWord(word.index);
 		};
 		textbox.appendChild(elem);
 		const ws = document.createTextNode(word.space);
@@ -92,6 +92,26 @@ function setActiveWord(index) {
 	const word = words[index];
 	word.elem.classList.add('active');
 	activeWord = word;
+}
+
+function deleteWord() {
+	if(!activeWord) {
+		return;
+	}
+	console.log('deleteWord');
+	const word = activeWord;
+	nextWord();
+	words.splice(word.index, 1);
+	const parent = word.elem.parentNode;
+	parent.removeChild(word.elem);
+	parent.removeChild(word.wsElem);
+	updateIndices();
+}
+
+function updateIndices() {
+	for(let i = 0; i < words.length; i++) {
+		words[i].index = i;
+	}
 }
 
 function renderWord(word) {
@@ -158,16 +178,18 @@ document.addEventListener('keydown', event => {
 			nextWord();
 			break;
 		case ',':
-			editWordImmediately(w => w.replaceAll(/[-,:.[\]]/g, '') + ',');
-			nextWord();
-			break;
 		case '.':
-			editWordImmediately(w => w.replaceAll(/[-,:.[\]]/g, '') + '.');
+		case '?':
+		case '!':
+			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + event.key);
 			nextWord();
 			break;
 		case 'c':
 			event.preventDefault();
 			editWord();
+			break;
+		case 'd':
+			deleteWord();
 			break;
 	}
 });

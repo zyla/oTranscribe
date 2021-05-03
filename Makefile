@@ -34,4 +34,5 @@ build_prod:
 	# run webpack
 	./node_modules/webpack/bin/webpack.js -p
 
+	rm -rf dist-public
 	cp -r dist dist-public

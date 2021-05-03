@@ -24,51 +24,14 @@ function initWatchFormatting(){
 }
 
 function setEditorContents( dirtyText, opts = {} ) {
-    
-    const newText = cleanHTML(dirtyText);
-
-    var $textbox = $("#textbox");
-    
-    function replaceText() {
-        if (typeof newText === 'string') {
-            $textbox[0].innerHTML = newText;
-        } else {
-            textbox[0].innerHTML = '';
-            $textbox[0].appendChild(newText);    
-        }
-        activateTimestamps();
-        $('.textbox-container').scrollTop(0);
-    }
-    
-    if (opts.transition) {
-        $textbox.fadeOut(300,function(){
-            replaceText();
-            $(this).fadeIn(300);
-        });        
-    } else {
-        replaceText();
-    }
+	loadText1(dirtyText);
 
 }
 
 function initAutoscroll() {
-  var isScrolledToBottom = false;
 
-  var container = document.querySelector('.textbox-container');
-  var textbox = document.querySelector('#textbox');
-
-  // update isScrolledToBottom on scroll event (true within 50px of the bottom of container)
-  container.addEventListener('scroll', function() {
-    isScrolledToBottom = container.scrollHeight - container.clientHeight - container.scrollTop <= 50;
-  });
-
-  // scroll to bottom on the input event, if isScrolledToBottom is true
-  textbox.addEventListener('input', function() {
-    if(isScrolledToBottom) {
-      container.scrollTop = container.scrollHeight;
-    }
-  });
 }
+	let words = [];
 
 window.loadText = () => {
 	$('#load-text').show();
@@ -76,9 +39,41 @@ window.loadText = () => {
 window.loadTextFinish = () => {
 	$('#load-text').hide();
 	const text = $('#load-text textarea').val();
-  var textbox = document.querySelector('#textbox');
-	textbox.innerText = text;
+	loadText1(text);
 };
+function loadText1(text) {
+	words = tokenize(text);
+	renderWords();
+}
+function tokenize(str) {
+	const words = [];
+	const re = /^([^ \t\n]+)(\s*)/;
+	for(let i = 0; i < str.length;) {
+		const matches = re.exec(str.substring(i));
+		if(!matches) {
+			break;
+		}
+		words.push({ word: matches[1], space: matches[2] });
+		i += matches[0].length;
+	}
+	return words;
+}
+function renderWords() {
+  var textbox = document.querySelector('#textbox');
+	textbox.innerText = '';
+	for(const word of words) {
+		const elem = document.createElement('span');
+		elem.className = 'word';
+		elem.innerText = word.word;
+		textbox.appendChild(elem);
+		const ws = document.createTextNode(word.space);
+		textbox.appendChild(ws);
+	}
+}
+
+document.addEventListener('load', () => {
+	loadText1("Ala ma kota, a kot\nma jakieś ale");
+});
 
 export {
     initWatchFormatting as watchFormatting,

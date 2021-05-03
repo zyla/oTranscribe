@@ -1,0 +1,9 @@
+version: '2.1'
+
+services:
+  dev:
+    build: ./.docker
+    command: dumb-init sh -c 'while sleep 1000; do true; done'
+    volumes:
+      - .:/app
+    working_dir: /app

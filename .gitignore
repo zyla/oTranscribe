@@ -1,4 +1,5 @@
 dist
+dist-public
 node_modules/
 publish.sh
 todo.md

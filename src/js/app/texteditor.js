@@ -24,6 +24,7 @@ function initWatchFormatting(){
 }
 
 function setEditorContents( dirtyText, opts = {} ) {
+	console.log('load ', dirtyText);
 	loadText1(dirtyText);
 
 }
@@ -45,6 +46,7 @@ function loadText1(text) {
 	words = tokenize(text);
 	console.log(words);
 	renderWords();
+	updateIndices();
 }
 function tokenize(str) {
 	const words = [];
@@ -64,18 +66,10 @@ function renderWords() {
 	textbox.innerText = '';
 	for(let index = 0; index < words.length; index++) {
 		const word = words[index];
-		const elem = document.createElement('span');
-		word.elem = elem;
-		word.index = index;
-		elem.className = 'word';
-		elem.innerText = word.word;
-		elem.onclick = () => {
-			setActiveWord(word.index);
-		};
-		textbox.appendChild(elem);
-		const ws = document.createTextNode(word.space);
-		word.wsElem = ws;
-		textbox.appendChild(ws);
+		renderWord(word);
+
+		textbox.appendChild(word.elem);
+		textbox.appendChild(word.wsElem);
 	}
 	if(words.length > 0) {
 		setActiveWord(0);
@@ -112,9 +106,10 @@ function updateIndices() {
 	for(let i = 0; i < words.length; i++) {
 		words[i].index = i;
 	}
+	console.log(JSON.stringify(words.map(w => [w.word, w.index])));
 }
 
-function renderWord(word) {
+function rerenderWord(word) {
 	word.elem.innerText = word.word;
 	word.wsElem.innerText = word.space;
 }
@@ -125,7 +120,7 @@ function editWordImmediately(fn, spaceFn) {
 		if(spaceFn) {
 			activeWord.space = spaceFn(activeWord.space);
 		}
-		renderWord(activeWord);
+		rerenderWord(activeWord);
 	}
 }
 
@@ -150,10 +145,44 @@ function editWord() {
 	    sel.addRange(range);
 }
 
-function finishEditing() {
-	activeWord.word = activeWord.elem.innerText;
+function finishEditing(text) {
 		activeWord.elem.contentEditable = false;
 		activeWord.editing = false;
+	console.log('finishEditing ' + JSON.stringify(text));
+	const theWord = activeWord;
+	deleteWord();
+	insertWords(tokenize(text + theWord.space));
+}
+
+function insertWords(newWords) {
+	console.log('insertWords ' + JSON.stringify(newWords));
+	const index = activeWord.index;
+	words.splice(index, 0, ...newWords);
+
+	const parent = document.getElementById('textbox');
+
+	for(const word of newWords) {
+		renderWord(word);
+		parent.insertBefore(word.elem, activeWord.elem);
+		parent.insertBefore(word.wsElem, activeWord.elem);
+	}
+
+	updateIndices();
+}
+
+function renderWord(word) {
+	               const elem = document.createElement('span');
+	               word.elem = elem;
+	               elem.className = 'word';
+	               elem.innerText = word.word;
+	               elem.onclick = () => {
+	                       setActiveWord(word.index);
+	               };
+	               textbox.appendChild(elem);
+	               const ws = document.createTextNode(word.space);
+	               word.wsElem = ws;
+	               textbox.appendChild(ws);
+
 }
 
 document.addEventListener('keydown', event => {
@@ -162,8 +191,7 @@ document.addEventListener('keydown', event => {
 		switch(event.key) {
 			case 'Enter':
 				event.preventDefault();
-				finishEditing();
-				nextWord();
+				finishEditing(activeWord.elem.innerText);
 				break;
 		}
 		return;
@@ -184,9 +212,19 @@ document.addEventListener('keydown', event => {
 			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, '') + event.key);
 			nextWord();
 			break;
+		case 'A':
+			editWordImmediately(w => w.substring(0,1).toUpperCase() + w.substring(1));
+			break;
+		case 'a':
+			editWordImmediately(w => w.substring(0,1).toLowerCase() + w.substring(1));
+			break;
 		case 'c':
 			event.preventDefault();
 			editWord();
+			break;
+		case ' ':
+			editWordImmediately(w => w.replaceAll(/[-,:.!?[\]]/g, ''));
+			nextWord();
 			break;
 		case 'd':
 			deleteWord();

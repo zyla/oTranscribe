@@ -5,7 +5,9 @@ import {setEditorContents} from './texteditor';
 import { addKeyboardShortcut } from './ui';
 
 function getTexteditorContents() {
-    return document.querySelector('#textbox').innerText;
+    const content = document.querySelector('#textbox').innerText;
+    console.log('saving', content);
+	return content;
 }
 
 function init(){
